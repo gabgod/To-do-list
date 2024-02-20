@@ -6,8 +6,8 @@ from django.db import models
 class Task(models.Model):
     task_title =  models.CharField(max_length=200)
     task_description = models.TextField()
-    estimated_time = models.FloatField(null=True,blank=True)
-    worked_time = models.FloatField(null=True,blank=True)
+    estimated_time = models.CharField(max_length=5,null=True)
+    worked_time = models.CharField(max_length=5,null=True)
     status = models.BooleanField(verbose_name='completed', default=False)
     priority = models.CharField(max_length=6,default="HIGH")
     #Why not on_delete=models.CASCADE, a owner could be fired but the task should still be completed

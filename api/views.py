@@ -18,11 +18,22 @@ def TaskAdd(request,format=None):
     serializer =  TaskSerializer(data=request.data)
     
     if serializer.is_valid():
-        if str(serializer.validated_data['priority']) == "HIGH" or str(serializer.validated_data['priority']) == "MEDIUM" or str(serializer.validated_data['priority']) == "LOW":
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        else:
+        
+        ## validates the format for the inserted date for estimated time the wanted format is HH:MM
+        if len(serializer.validated_data['estimated_time']) <=4 or ":" not in str(serializer.validated_data['estimated_time']): 
+            return Response("estimated_time should be HH:MM ",status=status.HTTP_428_PRECONDITION_REQUIRED)
+
+        ## validates the format for the inserted date for worked time the wanted format is HH:MM
+        if len(serializer.validated_data['worked_time']) <=4 or ":" not in str(serializer.validated_data['worked_time']):
+            return Response("worked_time should be HH:MM ",status=status.HTTP_428_PRECONDITION_REQUIRED)
+        
+        ## validates if the priority is recived is one of the predetermined options
+        if str(serializer.validated_data['priority']) not in ["HIGH","MEDIUM","LOW"]:
             return Response("priority should be: HIGH, MEDIUM, LOW",status=status.HTTP_428_PRECONDITION_REQUIRED)
+
+        ## if everything is alright the recived data is saved on the database
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
 
 @api_view(['PUT'])
 def TaskUpdate(request,id,format=None):
