@@ -37,12 +37,16 @@ def TaskAdd(request,format=None):
 
 @api_view(['PUT'])
 def TaskUpdate(request,id,format=None):
+    ## validates if the recived id correspond to a task id
     try:
         task = Task.objects.get(pk=id)
     except Task.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    ## serialize the recived data and only updates what has been change, for a complete update change partial=False
     serializer = TaskSerializer(task,data=request.data,partial=True)
+    
+    
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
@@ -55,5 +59,6 @@ def TaskDelete(request,id,format=None):
         task = Task.objects.get(pk=id)
     except Task.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
     task.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

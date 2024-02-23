@@ -4,6 +4,8 @@ from django.db import models
 
 
 class Task(models.Model):
+
+
     task_title =  models.CharField(max_length=200)
     task_description = models.TextField()
     estimated_time = models.CharField(max_length=5,null=True)
